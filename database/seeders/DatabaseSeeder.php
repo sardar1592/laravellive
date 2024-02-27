@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $events = Event::factory(10)->create();
 
         foreach($events as $event) {
-            Speaker::factory(3)->create([
+            Speaker::factory(5)->create([
                 'event_id' => $event->id,
             ]);
         }
