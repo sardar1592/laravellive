@@ -19,6 +19,7 @@ type Query {
     ): Event @find
 
     events(
+      id: ID!
       name: String! @where(operator: "like")
     ): [Event!]! @paginate(defaultCount: 10)
 
@@ -27,6 +28,7 @@ type Query {
     ): Speaker @find
 
     speakers(
+      id: ID!
       name: String! @where(operator: "like")
     ): [Speaker!]! @paginate(defaultCount: 10)
 }
@@ -61,19 +63,19 @@ type Speaker {
 type Mutation {
 
   createEvent(
-    name: String!
-    city: String!
-    venue: String!
-    date: Date!
-    online: Boolean!
+    name: String! @rules(apply: ["required", "unique:events,name", "min:3","max:255"])
+    city: String! @rules(apply: ["required", "in:Lahore, Karachi, Islamabad, Faisalabad, Multan"])
+    venue: String! @rules(apply: ["required", "in:PC, Avari, Serena, Marriot, Pearl Continental, Online, Arfa Technology Park, LUMS, Expo Center"])
+    date: Date! @rules(apply: ["required"])
+    online: Boolean! @rules(apply: ["required", "boolean"])
   ): Event @create
 
   updateEvent(
-    id: ID!
-    name: String
-    city: String
-    venue: String
-    date: Date
+    id: ID! @rules(apply: ["required"])
+    name: String @rules(apply: ["required"])
+    city: String @rules(apply: ["required"])
+    venue: String @rules(apply: ["required"])
+    date: Date @rules(apply: ["required"])
   ): Event @update
 
 
@@ -81,6 +83,25 @@ type Mutation {
     id: ID! @wherekey
   ): Event @delete
 
+  createSpeaker(
+    name: String! @rules(apply: ["required", "min:3","max:255"])
+    email: Email! @rules(apply: ["required", "unique:speakers,email"])
+    city: String! @rules(apply: ["required", "in:Lahore, Karachi, Islamabad, Faisalabad, Multan"])
+    country: String! @rules(apply: ["required"])
+    event_id: ID! @rules(apply: ["required", "integer"])
+  ): Speaker @create
 
+  updateSpeaker(
+    id: ID! @rules(apply: ["required"])
+    name: String @rules(apply: ["required"])
+    email: Email @rules(apply: ["required"])
+    city: String @rules(apply: ["required"])
+    country: String @rules(apply: ["required"])
+    event_id: ID 
+  ): Speaker @update
+
+  deleteSpeaker (
+    id: ID! @wherekey
+  ): Speaker @delete
 
 }
