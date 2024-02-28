@@ -18,10 +18,10 @@ class SpeakerFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->firstName(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'city' => $this->faker->city(),
-            'country' => $this->faker->country(),
+            'name' => fake()->firstName(),
+            'email' => fake()->unique()->safeEmail(),
+            'city' => fake()->city(),
+            'country' => fake()->country(),
             'event_id' => Event::pluck('id')->random(),
         ];
     }
