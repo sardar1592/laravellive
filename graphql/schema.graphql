@@ -1,0 +1,108 @@
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar Email @scalar(class: "MLL\\GraphQLScalars\\Email")
+scalar JSON @scalar(class: "MLL\\GraphQLScalars\\JSON")
+scalar Date @scalar(class: "MLL\\GraphQLScalars\\Date")
+
+
+type Query {
+    user(
+      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find
+
+    users(
+      name: String @where(operator: "like")
+    ): [User!]! @paginate(defaultCount: 10)
+
+    event(
+      id: ID @eq
+    ): Event @find
+
+    events(
+      id: ID!
+      name: String! @where(operator: "like")
+    ): [Event!]! @paginate(defaultCount: 10)
+
+    speaker(
+      id: ID @eq
+    ): Speaker @find
+
+    speakers(
+      id: ID!
+      name: String! @where(operator: "like")
+    ): [Speaker!]! @paginate(defaultCount: 10)
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: Email!
+    email_verified_at: DateTime
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Event {
+    id: ID!
+    name: String!
+    city: String!
+    venue: String!
+    date: Date!
+    speakers: [Speaker!]! @hasMany
+}
+
+type Speaker {
+    id: ID!
+    name: String!
+    email: Email!
+    city: String!
+    country: String!
+    event: Event! @belongsTo
+}
+
+type Mutation {
+
+  createEvent(
+    name: String! @rules(apply: ["required", "unique:events,name", "min:3","max:255"])
+    city: String! @rules(apply: ["required", "in:Lahore,Karachi,Islamabad,Faisalabad,Multan"])
+    venue: String! @rules(apply: ["required", "in:PC,Avari,Serena,Marriot,Pearl Continental,Online,Arfa Technology Park,LUMS,Expo Center"])
+    date: Date! @rules(apply: ["required"])
+    online: Boolean! @rules(apply: ["required", "boolean"])
+  ): Event @create
+
+  updateEvent(
+    id: ID! @rules(apply: ["required"])
+    name: String @rules(apply: ["required"])
+    city: String @rules(apply: ["required"])
+    venue: String @rules(apply: ["required"])
+    date: Date @rules(apply: ["required"])
+    online: Boolean! @rules(apply: ["required", "boolean"])
+  ): Event @update
+
+
+  deleteEvent (
+    id: ID! @wherekey
+  ): Event @delete
+
+  createSpeaker(
+    name: String! @rules(apply: ["required", "min:3","max:255"])
+    email: Email! @rules(apply: ["required", "unique:speakers,email"])
+    city: String! @rules(apply: ["required", "in:Lahore,Karachi,Islamabad,Faisalabad,Multan"])
+    country: String! @rules(apply: ["required"])
+    event_id: ID! @rules(apply: ["required", "integer"])
+  ): Speaker @create
+
+  updateSpeaker(
+    id: ID! @rules(apply: ["required"])
+    name: String @rules(apply: ["required"])
+    email: Email @rules(apply: ["required"])
+    city: String @rules(apply: ["required"])
+    country: String @rules(apply: ["required"])
+    event_id: ID 
+  ): Speaker @update
+
+  deleteSpeaker (
+    id: ID! @wherekey
+  ): Speaker @delete
+
+}
