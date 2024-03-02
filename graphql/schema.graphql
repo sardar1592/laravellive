@@ -64,8 +64,8 @@ type Mutation {
 
   createEvent(
     name: String! @rules(apply: ["required", "unique:events,name", "min:3","max:255"])
-    city: String! @rules(apply: ["required", "in:Lahore, Karachi, Islamabad, Faisalabad, Multan"])
-    venue: String! @rules(apply: ["required", "in:PC, Avari, Serena, Marriot, Pearl Continental, Online, Arfa Technology Park, LUMS, Expo Center"])
+    city: String! @rules(apply: ["required", "in:Lahore,Karachi,Islamabad,Faisalabad,Multan"])
+    venue: String! @rules(apply: ["required", "in:PC,Avari,Serena,Marriot,Pearl Continental,Online,Arfa Technology Park,LUMS,Expo Center"])
     date: Date! @rules(apply: ["required"])
     online: Boolean! @rules(apply: ["required", "boolean"])
   ): Event @create
@@ -76,6 +76,7 @@ type Mutation {
     city: String @rules(apply: ["required"])
     venue: String @rules(apply: ["required"])
     date: Date @rules(apply: ["required"])
+    online: Boolean! @rules(apply: ["required", "boolean"])
   ): Event @update
 
 
@@ -86,7 +87,7 @@ type Mutation {
   createSpeaker(
     name: String! @rules(apply: ["required", "min:3","max:255"])
     email: Email! @rules(apply: ["required", "unique:speakers,email"])
-    city: String! @rules(apply: ["required", "in:Lahore, Karachi, Islamabad, Faisalabad, Multan"])
+    city: String! @rules(apply: ["required", "in:Lahore,Karachi,Islamabad,Faisalabad,Multan"])
     country: String! @rules(apply: ["required"])
     event_id: ID! @rules(apply: ["required", "integer"])
   ): Speaker @create
